@@ -9,7 +9,7 @@ Release:        1.ius%{?dist}
 Summary:        Python 3 interface to the Redis key-value store
 License:        MIT
 URL:            http://github.com/andymccurdy/redis-py
-Source0:        http://pypi.python.org/packages/source/r/redis/redis-%{version}.tar.gz
+Source0:        https://pypi.python.org/packages/source/r/redis/redis-%{version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  python%{ius_suffix}-devel
 BuildRequires:  python%{ius_suffix}-setuptools
