@@ -43,7 +43,9 @@ kill %1
 
 
 %files
-%doc CHANGES LICENSE README.rst
+%{!?_licensedir:%global license %%doc}
+%license LICENSE
+%doc CHANGES README.rst
 
 %{python35u_sitelib}/%{upstream_name}
 %{python35u_sitelib}/%{upstream_name}-%{version}-py%{python35u_version}.egg-info
@@ -52,6 +54,7 @@ kill %1
 %changelog
 * Fri Apr 15 2016 Carl George <carl.george@rackspace.com> - 2.10.5-1.ius
 - Port from Fedora to IUS
+- Use %%license when possible
 
 * Mon Apr 04 2016 Ralph Bean <rbean@redhat.com> - 2.10.5-1
 - new version
