@@ -1,37 +1,24 @@
-%if 0%{?fedora} >= 13 || 0%{?el} >= 8
-%global with_python3 1
-%endif
-
+%global ius_suffix 35u
 %global upstream_name redis
 
-Name:           python-%{upstream_name}
+Name:           python%{ius_suffix}-%{upstream_name}
 Version:        2.10.5
-Release:        1%{?dist}
-Summary:        Python 2 interface to the Redis key-value store
+Release:        1.ius%{?dist}
+Summary:        Python 3 interface to the Redis key-value store
 License:        MIT
 URL:            http://github.com/andymccurdy/redis-py
 Source0:        http://pypi.python.org/packages/source/r/redis/redis-%{version}.tar.gz
 BuildArch:      noarch
-BuildRequires:  python2-devel
-BuildRequires:  python-setuptools
-BuildRequires:  python-py
-BuildRequires:  pytest
+BuildRequires:  python%{ius_suffix}-devel
+BuildRequires:  python%{ius_suffix}-setuptools
+BuildRequires:  python%{ius_suffix}-py
+BuildRequires:  python%{ius_suffix}-pytest
 BuildRequires:  redis
 
+
 %description
-This is a Python 2 interface to the Redis key-value store.
-
-%if 0%{?with_python3}
-%package -n     python3-redis
-Summary:        Python 3 interface to the Redis key-value store
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-BuildRequires:  python3-py
-BuildRequires:  python3-pytest
-
-%description -n python3-redis
 This is a Python 3 interface to the Redis key-value store.
-%endif
+
 
 %prep
 %setup -qn %{upstream_name}-%{version}
@@ -40,50 +27,32 @@ rm -frv %{upstream_name}.egg-info
 # This test passes locally but fails in koji...
 rm tests/test_commands.py*
 
-%if 0%{?with_python3}
-rm -rf %{py3dir}
-cp -a . %{py3dir}
-%endif
 
 %build
-%if 0%{?with_python3}
-pushd %{py3dir}
-%{__python3} setup.py build
-popd
-%endif
-%{__python2} setup.py build
+%{__python35u} setup.py build
+
 
 %install
-%if 0%{?with_python3}
-pushd %{py3dir}
-%{__python3} setup.py install -O1 --skip-build --root=%{buildroot}
-popd
-%endif
-%{__python2} setup.py install -O1 --skip-build --root %{buildroot}
+%{__python35u} setup.py install -O1 --skip-build --root=%{buildroot}
+
 
 %check
 redis-server &
-%if 0%{?with_python3}
-pushd %{py3dir}
-%{__python3} setup.py test
-popd
-%endif
-%{__python2} setup.py test
+%{__python35u} setup.py test
 kill %1
+
 
 %files
 %doc CHANGES LICENSE README.rst
-%{python2_sitelib}/%{upstream_name}
-%{python2_sitelib}/%{upstream_name}-%{version}-py%{python2_version}.egg-info
 
-%if 0%{?with_python3}
-%files -n python3-redis
-%doc CHANGES LICENSE README.rst
-%{python3_sitelib}/%{upstream_name}
-%{python3_sitelib}/%{upstream_name}-%{version}-py%{python3_version}.egg-info
-%endif
+%{python35u_sitelib}/%{upstream_name}
+%{python35u_sitelib}/%{upstream_name}-%{version}-py%{python35u_version}.egg-info
+
 
 %changelog
+* Fri Apr 15 2016 Carl George <carl.george@rackspace.com> - 2.10.5-1.ius
+- Port from Fedora to IUS
+
 * Mon Apr 04 2016 Ralph Bean <rbean@redhat.com> - 2.10.5-1
 - new version
 
