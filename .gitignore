@@ -8,3 +8,9 @@
 /redis-2.10.2.tar.gz
 /redis-2.10.3.tar.gz
 /redis-2.10.5.tar.gz
+BUILD
+BUILDROOT
+MOCK
+RPMS
+SOURCES/*.tar.gz
+SRPMS
