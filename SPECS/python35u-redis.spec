@@ -1,6 +1,8 @@
 %global ius_suffix 35u
 %global upstream_name redis
 
+%bcond_with tests
+
 Name:           python%{ius_suffix}-%{upstream_name}
 Version:        2.10.5
 Release:        1.ius%{?dist}
@@ -11,9 +13,11 @@ Source0:        http://pypi.python.org/packages/source/r/redis/redis-%{version}.
 BuildArch:      noarch
 BuildRequires:  python%{ius_suffix}-devel
 BuildRequires:  python%{ius_suffix}-setuptools
+%if %{with tests}
 BuildRequires:  python%{ius_suffix}-py
 BuildRequires:  python%{ius_suffix}-pytest
 BuildRequires:  redis
+%endif
 
 
 %description
@@ -24,8 +28,10 @@ This is a Python 3 interface to the Redis key-value store.
 %setup -qn %{upstream_name}-%{version}
 rm -frv %{upstream_name}.egg-info
 
+%if %{with tests}
 # This test passes locally but fails in koji...
 rm tests/test_commands.py*
+%endif
 
 
 %build
@@ -36,10 +42,12 @@ rm tests/test_commands.py*
 %{__python35u} setup.py install -O1 --skip-build --root=%{buildroot}
 
 
+%if %{with tests}
 %check
 redis-server &
 %{__python35u} setup.py test
 kill %1
+%endif
 
 
 %files
@@ -55,6 +63,7 @@ kill %1
 * Fri Apr 15 2016 Carl George <carl.george@rackspace.com> - 2.10.5-1.ius
 - Port from Fedora to IUS
 - Use %%license when possible
+- Conditionalize test suite
 
 * Mon Apr 04 2016 Ralph Bean <rbean@redhat.com> - 2.10.5-1
 - new version
